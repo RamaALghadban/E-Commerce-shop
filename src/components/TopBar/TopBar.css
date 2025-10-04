@@ -1,0 +1,52 @@
+/* TopBar Styles */
+.topbar {
+  width: 100%;
+  background-color: black;
+  color: white;
+  font-size: 0.75rem;
+  position: relative;
+  z-index: 1001;
+}
+
+.topbar-container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.topbar-message {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 25rem;
+
+}
+
+.topbar-shop-link {
+  margin-left: 0.25rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s;
+}
+
+.topbar-shop-link:hover {
+  color: #d1d5db;
+}
+
+.topbar-language-selector {
+  background-color: transparent;
+  color: rgba(191, 184, 184, 0.884);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  transition: border-color 0.2s;
+}
+
+.topbar-language-selector:hover {
+  border-color: rgba(39, 35, 35, 0.4);
+}
