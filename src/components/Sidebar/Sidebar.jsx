@@ -1,21 +1,23 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FiMenu, FiX, FiChevronDown, FiChevronRight } from 'react-icons/fi'
 import './Sidebar.css'
 
 const Sidebar = () => {
+  const navigate = useNavigate()
   const [isOpen, setIsOpen] = useState(false)
   const [expandedCategories, setExpandedCategories] = useState({})
 
   const categories = [
     { name: "Women's Fashion", hasSubcategories: true },
     { name: "Men's Fashion", hasSubcategories: true },
-    { name: "Electronics", hasSubcategories: true },
-    { name: "Home & Lifestyle", hasSubcategories: true },
+    { name: "Electronics", hasSubcategories: false },
+    { name: "Home & Lifestyle", hasSubcategories: false },
     { name: "Medicine", hasSubcategories: false },
-    { name: "Sports & Outdoor", hasSubcategories: true },
-    { name: "Baby's & Toys", hasSubcategories: true },
-    { name: "Groceries & Pets", hasSubcategories: true },
-    { name: "Health & Beauty", hasSubcategories: true }
+    { name: "Sports & Outdoor", hasSubcategories: false },
+    { name: "Baby's & Toys", hasSubcategories: false },
+    { name: "Groceries & Pets", hasSubcategories: false },
+    { name: "Health & Beauty", hasSubcategories: false }
   ]
 
   const toggleCategory = (categoryName) => {
@@ -24,7 +26,15 @@ const Sidebar = () => {
         ...prev,
         [categoryName]: !prev[categoryName]
       }))
+    } else {
+      // Navigate to products page for categories without subcategories
+      navigate('/products')
     }
+  }
+
+  const handleCategoryClick = (categoryName) => {
+    // Navigate to products page
+    navigate('/products')
   }
 
   const toggleSidebar = () => {
@@ -34,7 +44,7 @@ const Sidebar = () => {
   return (
     <>
       {/* Mobile Menu Button */}
-      <button 
+      <button
         className="sidebar-mobile-toggle"
         onClick={toggleSidebar}
         aria-label="Toggle sidebar menu"
@@ -44,7 +54,7 @@ const Sidebar = () => {
 
       {/* Sidebar Overlay */}
       {isOpen && (
-        <div 
+        <div
           className="sidebar-overlay"
           onClick={toggleSidebar}
         ></div>
@@ -54,7 +64,7 @@ const Sidebar = () => {
       <aside className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
         <div className="sidebar-header">
           <h2 className="sidebar-title">Categories</h2>
-          <button 
+          <button
             className="sidebar-close"
             onClick={toggleSidebar}
             aria-label="Close sidebar"
@@ -68,9 +78,8 @@ const Sidebar = () => {
             {categories.map((category) => (
               <li key={category.name} className="sidebar-category-item">
                 <button
-                  className={`sidebar-category-button ${
-                    expandedCategories[category.name] ? 'expanded' : ''
-                  }`}
+                  className={`sidebar-category-button ${expandedCategories[category.name] ? 'expanded' : ''
+                    }`}
                   onClick={() => toggleCategory(category.name)}
                 >
                   <span className="sidebar-category-name">{category.name}</span>
@@ -84,28 +93,40 @@ const Sidebar = () => {
                     </span>
                   )}
                 </button>
-                
+
                 {category.hasSubcategories && expandedCategories[category.name] && (
                   <ul className="sidebar-subcategories">
                     <li className="sidebar-subcategory-item">
-                      <a href="#" className="sidebar-subcategory-link">
+                      <button
+                        onClick={() => handleCategoryClick(category.name)}
+                        className="sidebar-subcategory-link"
+                      >
                         View All {category.name}
-                      </a>
+                      </button>
                     </li>
                     <li className="sidebar-subcategory-item">
-                      <a href="#" className="sidebar-subcategory-link">
+                      <button
+                        onClick={() => handleCategoryClick('Featured')}
+                        className="sidebar-subcategory-link"
+                      >
                         Featured Items
-                      </a>
+                      </button>
                     </li>
                     <li className="sidebar-subcategory-item">
-                      <a href="#" className="sidebar-subcategory-link">
+                      <button
+                        onClick={() => handleCategoryClick('New Arrivals')}
+                        className="sidebar-subcategory-link"
+                      >
                         New Arrivals
-                      </a>
+                      </button>
                     </li>
                     <li className="sidebar-subcategory-item">
-                      <a href="#" className="sidebar-subcategory-link">
+                      <button
+                        onClick={() => handleCategoryClick('Sale')}
+                        className="sidebar-subcategory-link"
+                      >
                         Sale Items
-                      </a>
+                      </button>
                     </li>
                   </ul>
                 )}
@@ -114,13 +135,7 @@ const Sidebar = () => {
           </ul>
         </nav>
 
-        <div className="sidebar-footer">
-          <div className="sidebar-footer-content">
-            <p className="sidebar-footer-text">
-              Discover amazing products across all categories
-            </p>
-          </div>
-        </div>
+        
       </aside>
     </>
   )

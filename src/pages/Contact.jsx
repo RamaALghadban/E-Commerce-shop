@@ -1,152 +1,281 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
-  Grid,
-  Card,
-  CardContent,
   Typography,
   TextField,
   Button,
   Divider,
-  Stack,
 } from "@mui/material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EmailIcon from "@mui/icons-material/Email";
 
 const ContactPage = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Form submitted:", formData);
+    // Add your form submission logic here
+  };
+
   return (
-    <Box sx={{ p: { xs: 2, md: 6 }, bgcolor: "#fff" }}>
+    <Box
+      sx={{
+        p: { xs: 2, md: 4 },
+        bgcolor: "#fff",
+        width: "100%",
+        maxWidth: "1400px",
+        margin: "0 auto",
+      }}
+    >
       {/* Breadcrumb */}
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      <Typography
+        variant="body2"
+        sx={{
+          mb: 5,
+          fontSize: "14px",
+          color: "#666",
+        }}
+      >
         Home / <span style={{ color: "#000" }}>Contact</span>
       </Typography>
 
-      <Grid container spacing={4}>
-        {/* Left Side - Contact Info */}
-        <Grid item xs={12} md={4}>
-          <Card
-            sx={{
-              height: "100%",
-              p: 3,
-              borderRadius: 3,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-            }}
-          >
-            <CardContent>
-              {/* Call To Us */}
-              <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
-                <Box
-                  sx={{
-                    bgcolor: "error.main",
-                    color: "#fff",
-                    width: 45,
-                    height: 45,
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <PhoneIcon />
-                </Box>
-                <Typography variant="h6" fontWeight="bold">
-                  Call To Us
-                </Typography>
-              </Stack>
-
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                We are available 24/7, 7 days a week.
+      {/* Main Content */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: 4,
+        }}
+      >
+        {/* Left Side - Contact Information */}
+        <Box
+          sx={{
+            flex: { xs: "1", md: "0 0 340px" },
+            bgcolor: "#fff",
+            p: 4,
+            borderRadius: 1,
+            boxShadow: "0 1px 13px 0 rgba(0, 0, 0, 0.05)",
+          }}
+        >
+          {/* Call To Us Section */}
+          <Box sx={{ mb: 4 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  bgcolor: "#DB4444",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <PhoneIcon sx={{ color: "#fff", fontSize: 20 }} />
+              </Box>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 600, fontSize: "16px" }}
+              >
+                Call To Us
               </Typography>
-              <Typography variant="body2" fontWeight="medium">
-                Phone: +8801611222222
-              </Typography>
+            </Box>
 
-              <Divider sx={{ my: 3 }} />
+            <Typography
+              variant="body2"
+              sx={{ fontSize: "14px", color: "#000", mb: 2 }}
+            >
+              We are available 24/7, 7 days a week.
+            </Typography>
 
-              {/* Write To Us */}
-              <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
-                <Box
-                  sx={{
-                    bgcolor: "error.main",
-                    color: "#fff",
-                    width: 45,
-                    height: 45,
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <EmailIcon />
-                </Box>
-                <Typography variant="h6" fontWeight="bold">
-                  Write To Us
-                </Typography>
-              </Stack>
+            <Typography
+              variant="body2"
+              sx={{ fontSize: "14px", color: "#000", mb: 3 }}
+            >
+              Phone: +8801611112222
+            </Typography>
+          </Box>
 
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                Fill out our form and we will contact you within 24 hours.
+          <Divider sx={{ my: 3 }} />
+
+          {/* Write To Us Section */}
+          <Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+              <Box
+                sx={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  bgcolor: "#DB4444",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <EmailIcon sx={{ color: "#fff", fontSize: 20 }} />
+              </Box>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 600, fontSize: "16px" }}
+              >
+                Write To Us
               </Typography>
-              <Typography variant="body2">
-                Emails: <br />
-                <strong>customer@exclusive.com</strong>
-                <br />
-                <strong>support@exclusive.com</strong>
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+            </Box>
+
+            <Typography
+              variant="body2"
+              sx={{ fontSize: "14px", color: "#000", mb: 2 }}
+            >
+              Fill out our form and we will contact you within 24 hours.
+            </Typography>
+
+            <Typography
+              variant="body2"
+              sx={{ fontSize: "14px", color: "#000", mb: 1 }}
+            >
+              Emails: customer@exclusive.com
+            </Typography>
+
+            <Typography
+              variant="body2"
+              sx={{ fontSize: "14px", color: "#000" }}
+            >
+              Emails: support@exclusive.com
+            </Typography>
+          </Box>
+        </Box>
 
         {/* Right Side - Contact Form */}
-        <Grid item xs={12} md={8}>
-          <Card
-            sx={{
-              p: 3,
-              borderRadius: 3,
-              boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-            }}
-          >
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
-                  <TextField fullWidth label="Your Name *" variant="outlined" size="small" />
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <TextField fullWidth label="Your Email *" variant="outlined" size="small" />
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <TextField fullWidth label="Your Phone *" variant="outlined" size="small" />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Your Message"
-                    multiline
-                    rows={6}
-                    variant="outlined"
-                  />
-                </Grid>
-              </Grid>
+        <Box
+          sx={{
+            flex: 1,
+            bgcolor: "#fff",
+            p: 4,
+            borderRadius: 1,
+            boxShadow: "0 1px 13px 0 rgba(0, 0, 0, 0.05)",
+          }}
+        >
+          <form onSubmit={handleSubmit}>
+            {/* Top Row - Name, Email, Phone */}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" },
+                gap: 2,
+                mb: 3,
+              }}
+            >
+              <TextField
+                required
+                name="name"
+                placeholder="Your Name *"
+                value={formData.name}
+                onChange={handleChange}
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    bgcolor: "#f5f5f5",
+                    "& fieldset": {
+                      border: "none",
+                    },
+                  },
+                }}
+              />
 
-              <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-                <Button
-                  variant="contained"
-                  color="error"
-                  sx={{
-                    textTransform: "none",
-                    px: 4,
-                    py: 1,
-                    fontWeight: "bold",
-                    borderRadius: 1.5,
-                  }}
-                >
-                  Send Message
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+              <TextField
+                required
+                name="email"
+                type="email"
+                placeholder="Your Email *"
+                value={formData.email}
+                onChange={handleChange}
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    bgcolor: "#f5f5f5",
+                    "& fieldset": {
+                      border: "none",
+                    },
+                  },
+                }}
+              />
+
+              <TextField
+                required
+                name="phone"
+                placeholder="Your Phone *"
+                value={formData.phone}
+                onChange={handleChange}
+                variant="outlined"
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    bgcolor: "#f5f5f5",
+                    "& fieldset": {
+                      border: "none",
+                    },
+                  },
+                }}
+              />
+            </Box>
+
+            {/* Message Field */}
+            <TextField
+              name="message"
+              placeholder="Your Message"
+              value={formData.message}
+              onChange={handleChange}
+              multiline
+              rows={8}
+              variant="outlined"
+              fullWidth
+              sx={{
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  bgcolor: "#f5f5f5",
+                  "& fieldset": {
+                    border: "none",
+                  },
+                },
+              }}
+            />
+
+            {/* Submit Button */}
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  bgcolor: "#DB4444",
+                  color: "#fff",
+                  px: 5,
+                  py: 1.5,
+                  fontSize: "16px",
+                  textTransform: "none",
+                  borderRadius: 1,
+                  "&:hover": {
+                    bgcolor: "#C13939",
+                  },
+                }}
+              >
+                Send Message
+              </Button>
+            </Box>
+          </form>
+        </Box>
+      </Box>
     </Box>
   );
 };

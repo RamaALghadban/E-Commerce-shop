@@ -1,91 +1,76 @@
 import React, { useState, useEffect } from 'react'
-import { 
-  Box, 
-  Typography, 
-  Card, 
-  CardContent, 
-  CardMedia, 
-  Button, 
+import { useNavigate } from 'react-router-dom'
+import { useWishlist } from '../../context/WishlistContext'
+import { useCart } from '../../context/CartContext'
+import { getFlashSaleProducts } from '../../services/api'
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CardMedia,
+  Button,
   Chip,
   IconButton,
   Grid,
   Container,
-  Stack
+  Stack,
+  CircularProgress
 } from '@mui/material'
-import { 
-  ShoppingCartOutlined, 
+import {
+  ShoppingCartOutlined,
   FavoriteBorderOutlined,
+  Favorite,
   Star,
   StarBorder,
-  ArrowForward
+  ArrowForward,
+  ArrowBackIos,
+  ArrowForwardIos,
+  VisibilityOutlined
 } from '@mui/icons-material'
 import './FlashSales.css'
 
 const FlashSales = () => {
+  const navigate = useNavigate()
+  const { isInWishlist, toggleWishlist } = useWishlist()
+  const { addToCart } = useCart()
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
     minutes: 0,
     seconds: 0
   })
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const scrollContainerRef = React.useRef(null)
 
-  const products = [
-    {
-      id: 1,
-      name: "Gamepad Controller",
-      price: 99.00,
-      originalPrice: 149.00,
-      rating: 4.8,
-      reviews: 124,
-      image: "🎮",
-      discount: 33,
-      hasAddToCart: true
-    },
-    {
-      id: 2,
-      name: "RGB Keyboard",
-      price: 89.99,
-      originalPrice: 129.99,
-      rating: 4.9,
-      reviews: 89,
-      image: "⌨️",
-      discount: 31,
-      hasAddToCart: true
-    },
-    {
-      id: 3,
-      name: "Gaming Monitor",
-      price: 399.99,
-      originalPrice: 599.99,
-      rating: 4.7,
-      reviews: 156,
-      image: "🖥️",
-      discount: 33,
-      hasAddToCart: false
-    },
-    {
-      id: 4,
-      name: "Comfortable Chair",
-      price: 199.99,
-      originalPrice: 299.99,
-      rating: 4.6,
-      reviews: 203,
-      image: "🪑",
-      discount: 33,
-      hasAddToCart: true
-    },
-    {
-      id: 5,
-      name: "Second Chair Model",
-      price: 179.99,
-      originalPrice: 249.99,
-      rating: 4.5,
-      reviews: 78,
-      image: "🪑",
-      discount: 28,
-      hasAddToCart: true
+  const scroll = (direction) => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 300
+      scrollContainerRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      })
     }
-  ]
+  }
+
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true)
+        // Use the API service to fetch Flash Sale products (5 items)
+        const data = await getFlashSaleProducts(5)
+        setProducts(data)
+      } catch (err) {
+        console.error("Error fetching products:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProducts()
+  }, [])
 
   // Countdown timer logic
   useEffect(() => {
@@ -184,24 +169,52 @@ const FlashSales = () => {
     <Container maxWidth="xl" sx={{ py: 4 }}>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
-        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
-          <Box
-            sx={{
-              width: 20,
-              height: 40,
-              backgroundColor: '#d32f2f',
-              borderRadius: '4px'
-            }}
-          />
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 'bold',
-              color: '#d32f2f'
-            }}
-          >
-            Flash Sales
-          </Typography>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 3 }}>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Box
+              sx={{
+                width: 20,
+                height: 40,
+                backgroundColor: '#d32f2f',
+                borderRadius: '4px'
+              }}
+            />
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 'bold',
+                color: '#d32f2f'
+              }}
+            >
+              Flash Sales
+            </Typography>
+          </Stack>
+
+          {/* Navigation Arrows */}
+          <Stack direction="row" spacing={1}>
+            <IconButton
+              onClick={() => scroll('left')}
+              sx={{
+                backgroundColor: '#f5f5f5',
+                '&:hover': { backgroundColor: '#e0e0e0' },
+                width: 40,
+                height: 40
+              }}
+            >
+              <ArrowBackIos sx={{ fontSize: 16, ml: 1 }} />
+            </IconButton>
+            <IconButton
+              onClick={() => scroll('right')}
+              sx={{
+                backgroundColor: '#f5f5f5',
+                '&:hover': { backgroundColor: '#e0e0e0' },
+                width: 40,
+                height: 40
+              }}
+            >
+              <ArrowForwardIos sx={{ fontSize: 16 }} />
+            </IconButton>
+          </Stack>
         </Stack>
 
         {/* Countdown Timer */}
@@ -230,18 +243,49 @@ const FlashSales = () => {
       </Box>
 
       {/* Products Grid */}
-      <Grid container spacing={3}>
-        {products.map((product) => (
-          <Grid item xs={12} sm={6} md={4} lg={2.4} key={product.id}>
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+          <CircularProgress size={60} sx={{ color: '#d32f2f' }} />
+        </Box>
+      ) : (
+        <Box
+          ref={scrollContainerRef}
+          sx={{
+            display: 'flex',
+            gap: 3,
+            overflowX: 'hidden', // Disable manual scrolling - use arrows only
+            overflowY: 'hidden',
+            pb: 2,
+            scrollBehavior: 'smooth',
+            cursor: 'default', // Prevent drag cursor
+            userSelect: 'none', // Prevent text selection while trying to drag
+            // Hide scrollbar completely
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
+            '-ms-overflow-style': 'none',  // IE and Edge
+            'scrollbarWidth': 'none',  // Firefox
+          }}
+        >
+          {products.map((product) => (
             <Card
+              key={product.id}
+              onClick={() => navigate(`/product/${product.id}`)}
               sx={{
-                height: '100%',
+                minWidth: 270,
+                maxWidth: 270,
+                flexShrink: 0,
                 display: 'flex',
                 flexDirection: 'column',
+                cursor: 'pointer',
                 transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
                 '&:hover': {
                   transform: 'translateY(-4px)',
-                  boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
+                  boxShadow: '0 8px 25px rgba(0,0,0,0.15)',
+                  '& .add-to-cart-btn': {
+                    opacity: 1,
+                    visibility: 'visible',
+                  }
                 }
               }}
             >
@@ -254,13 +298,11 @@ const FlashSales = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   backgroundColor: '#f8f9fa',
-                  backgroundImage: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center'
+                  overflow: 'hidden'
                 }}
               >
                 <Chip
-                  label={`-${product.discount}%`}
+                  label="-40%"
                   size="small"
                   sx={{
                     position: 'absolute',
@@ -268,30 +310,106 @@ const FlashSales = () => {
                     left: 8,
                     backgroundColor: '#d32f2f',
                     color: 'white',
-                    fontWeight: 'bold'
+                    fontWeight: 'bold',
+                    zIndex: 2,
                   }}
                 />
-                <IconButton
+
+                {/* Wishlist and Quick View Icons */}
+                <Stack
+                  direction="column"
+                  spacing={0.5}
                   sx={{
                     position: 'absolute',
                     top: 8,
                     right: 8,
-                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    zIndex: 2,
+                  }}
+                >
+                  <IconButton
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleWishlist(product)
+                    }}
+                    sx={{
+                      backgroundColor: isInWishlist(product.id) ? '#d32f2f' : 'rgba(255,255,255,0.95)',
+                      width: 32,
+                      height: 32,
+                      color: isInWishlist(product.id) ? 'white' : 'inherit',
+                      '&:hover': {
+                        backgroundColor: isInWishlist(product.id) ? '#b71c1c' : 'white',
+                        color: '#d32f2f',
+                      }
+                    }}
+                  >
+                    {isInWishlist(product.id) ? (
+                      <Favorite sx={{ fontSize: 18 }} />
+                    ) : (
+                      <FavoriteBorderOutlined sx={{ fontSize: 18 }} />
+                    )}
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    sx={{
+                      backgroundColor: 'rgba(255,255,255,0.95)',
+                      width: 32,
+                      height: 32,
+                      '&:hover': {
+                        backgroundColor: 'white',
+                        color: '#d32f2f',
+                      }
+                    }}
+                  >
+                    <VisibilityOutlined sx={{ fontSize: 18 }} />
+                  </IconButton>
+                </Stack>
+
+                <CardMedia
+                  component="img"
+                  image={product.images[0] || "https://via.placeholder.com/200"}
+                  alt={product.title}
+                  sx={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    padding: 2
+                  }}
+                />
+
+                {/* Add To Cart Button (appears on hover) */}
+                <Button
+                  className="add-to-cart-btn"
+                  fullWidth
+                  startIcon={<ShoppingCartOutlined />}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    addToCart({
+                      id: product.id,
+                      name: product.title,
+                      price: product.price,
+                      image: product.images[0] || "https://via.placeholder.com/200"
+                    })
+                  }}
+                  sx={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    backgroundColor: '#000',
+                    color: 'white',
+                    borderRadius: 0,
+                    py: 1.2,
+                    opacity: 0,
+                    visibility: 'hidden',
+                    transition: 'opacity 0.3s, visibility 0.3s',
                     '&:hover': {
-                      backgroundColor: 'white'
+                      backgroundColor: '#1a1a1a',
                     }
                   }}
                 >
-                  <FavoriteBorderOutlined />
-                </IconButton>
-                <Typography
-                  sx={{
-                    fontSize: '4rem',
-                    filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))'
-                  }}
-                >
-                  {product.image}
-                </Typography>
+                  Add To Cart
+                </Button>
               </Box>
 
               <CardContent sx={{ flexGrow: 1, p: 2 }}>
@@ -305,7 +423,7 @@ const FlashSales = () => {
                     lineHeight: 1.3
                   }}
                 >
-                  {product.name}
+                  {product.title}
                 </Typography>
 
                 {/* Price */}
@@ -326,56 +444,41 @@ const FlashSales = () => {
                       textDecoration: 'line-through'
                     }}
                   >
-                    ${product.originalPrice}
+                    ${Math.round(product.price * 1.3)}
                   </Typography>
                 </Stack>
 
                 {/* Rating */}
-                <Stack direction="row" alignItems="center" spacing={0.5} sx={{ mb: 2 }}>
+                <Stack direction="row" alignItems="center" spacing={0.5}>
                   <Stack direction="row" spacing={0}>
-                    {renderStars(product.rating)}
+                    {renderStars(4.5)}
                   </Stack>
                   <Typography variant="body2" sx={{ color: '#666', ml: 0.5 }}>
-                    ({product.reviews})
+                    (88)
                   </Typography>
                 </Stack>
-
-                {/* Add to Cart Button */}
-                {product.hasAddToCart && (
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    startIcon={<ShoppingCartOutlined />}
-                    sx={{
-                      backgroundColor: '#d32f2f',
-                      '&:hover': {
-                        backgroundColor: '#b71c1c'
-                      }
-                    }}
-                  >
-                    Add to Cart
-                  </Button>
-                )}
               </CardContent>
             </Card>
-          </Grid>
-        ))}
-      </Grid>
+          ))}
+        </Box>
+      )}
 
       {/* View All Products Button */}
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Button
-          variant="outlined"
+          variant="contained"
           size="large"
-          endIcon={<ArrowForward />}
+          onClick={() => navigate('/products')}
           sx={{
-            borderColor: '#d32f2f',
-            color: '#d32f2f',
-            px: 4,
+            backgroundColor: '#d32f2f',
+            color: 'white',
+            px: 6,
             py: 1.5,
+            fontSize: '16px',
+            fontWeight: 500,
+            textTransform: 'none',
             '&:hover': {
-              borderColor: '#b71c1c',
-              backgroundColor: 'rgba(211, 47, 47, 0.04)'
+              backgroundColor: '#b71c1c'
             }
           }}
         >

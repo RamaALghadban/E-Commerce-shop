@@ -1,0 +1,68 @@
+/* src/assets/components/Footer/footer.css (المعدل) */
+
+/* نمط المكون الجذري (الخلفية واللون الأساسي) */
+.footer-root {
+    background-color: #000;
+    color: #fff;
+}
+
+/* نمط الروابط (Quick Link, Account) */
+.footer-link {
+    color: #ccc !important;
+    text-decoration: none !important;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+    display: block; /* لضمان أخذ العرض الكامل للستاك */
+    margin-bottom: 8px; /* مسافة بين الروابط */
+}
+
+.footer-link:hover {
+    color: #ff3333 !important; 
+}
+
+/* 💡 نمط حقل الاشتراك الجديد (v2) - لتطبيق الحدود الخارجية فقط */
+.subscribe-box-v2 {
+    display: flex;
+    align-items: center;
+    border: 1px solid #fff;
+    border-radius: 4px;
+    width: 100%; /* يمكن أن يكون أوسع من النسخة السابقة */
+    max-width: 217px; /* تقريبيًا عرض مناسب */
+}
+
+/* 💡 نمط حقل الإدخال النصي الجديد */
+.subscribe-input-v2 {
+    flex: 1;
+    color: #fff;
+    padding: 8px 12px; /* مسافة داخلية */
+}
+
+/* 💡 نمط أيقونة الإرسال داخل الحقل */
+.subscribe-icon-v2 {
+    color: #fff !important;
+    padding: 8px !important;
+}
+
+.subscribe-input-v2 input::placeholder {
+    color: #ccc;
+    opacity: 1;
+}
+
+/* 💡 نمط Placeholder للـ QR Code الجديد */
+.qr-code-placeholder-v2 {
+    width: 76px; /* حجم أصغر قليلاً من السابق */
+    height: 76px; 
+    background-color: white; 
+    border-radius: 4px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    /* يمكن وضع صورة الـ QR الحقيقية كخلفية هنا */
+}
+
+/* نمط صور المتاجر لتصغيرها */
+.app-store-img {
+    width: 100px;
+    height: 38px;
+    object-fit: contain;
+}
